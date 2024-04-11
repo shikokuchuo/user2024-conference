@@ -3,11 +3,11 @@ body {
 }
 
 .remark-code {
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .remark-slide-content {
-    font-size: 20px;
+    font-size: 22px;
 }
 
 .highlight1 {
@@ -18,3 +18,41 @@ body {
     color: #1aa1a6;
 }
 
+table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: left;
+}
+
+/* Table Header Styling */
+th {
+  background-color: #004d99;
+  color: white;
+  font-weight: bold;
+}
+
+/* Table Borders */
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+/* Zebra Striping for Rows */
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Hover effect for rows */
+tr:hover {
+  background-color: #ddd;
+}
+
+/* Rounded corners for the first th */
+th:first-child {
+  border-top-left-radius: 10px;
+}
+
+/* Rounded corners for the last th */
+th:last-child {
+  border-top-right-radius: 10px;
+}
