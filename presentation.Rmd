@@ -1,0 +1,44 @@
+---
+title: "Moju Kapu モジュカプ"
+subtitle: "How `mirai` and `crew` Are Powering the Next Generation of Parallel Computing in R"
+author: "Charlie Gao and Will Landau"
+institute: "Hibiki AI Limited, Eli Lilly and Company"
+date: "July 2024"
+output:
+  xaringan::moon_reader:
+    css: [useR, useR-fonts, "custom.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+class: chapter-slide
+
+# `mirai` and `crew` <br /> Powering the Next Generation of Parallel Computing in R
+
+---
+class: inverse, center, middle, chapter-slide
+
+# [1] Introduction
+
+---
+
+# Intro
+
+Install the **xaringan** package from [Github](https://github.com/yihui/xaringan):
+
+```{r eval=FALSE, tidy=FALSE}
+remotes::install_github("yihui/xaringan")
+```
+
+---
+
+class: center, middle
+
+# Thanks!
+
+Slides created via the R package [**xaringan**](https://github.com/yihui/xaringan).
+
+The chakra comes from [remark.js](https://remarkjs.com), [**knitr**](https://yihui.org/knitr/), and [R Markdown](https://rmarkdown.rstudio.com).
