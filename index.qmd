@@ -1,27 +1,159 @@
 ---
-title: "Moju Kapu モジュカプ"
-subtitle: "How `mirai` and `crew` Are Powering the Next Generation of Parallel Computing in R"
-author: "Charlie Gao and Will Landau"
-institute: "Hibiki AI Limited, Eli Lilly and Company"
-date: "July 2024"
-output:
-  xaringan::moon_reader:
-    css: [useR, useR-fonts, "custom.css"]
-    lib_dir: libs
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      countIncrementalSlides: false
+title: Moju Kapu モジュカプ
+subtitle: How `mirai` and `crew` Are Powering the Next Generation of Parallel Computing in R
+author: Charlie Gao and Will Landau
+institute: Hibiki AI Limited, Eli Lilly and Company
+date: July 9, 2024
+format:
+    revealjs:
+        theme:
+            - custom.scss
+        incremental: true
+        footer: "slides available at https://shikokuchuo.net/user2024-conference"
+        embed-resources: true
+        slide-number: true
+editor:
+    render-on-save: true
 ---
 
-class: chapter-slide
+<style>
+h1 {
+  font-size: 1.6em !important;
+}
+h2 {
+  font-size: 1.4em !important;
+}
+</style>
 
-# `mirai` and `crew` <br /> Powering the Next Generation of Parallel Computing in R
+# mirai
 
----
-class: inverse, center, middle, chapter-slide
+## 未来
+::: {.nonincremental}
 
-# [1] Introduction
+みらい &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / mI ˈ ra ˈ i: /
+
+
+n. future
+:::
+
+![](images/mirai.png)
+
+##
+
+```{.r code-line-numbers="|7-10|3-4,11|6-12|14-15|17-18|20-21|23-25"}
+library(mirai)
+
+a <- 1
+b <- 2
+
+m <- mirai(
+  {
+    Sys.sleep(5)
+    a + b
+  },
+  environment()
+)
+
+m
+#> < mirai | $data >
+
+m$data
+#> 'unresolved' logi NA
+
+m[]
+#> [1] 3
+
+m$data
+#> [1] 3
+```
+
+## {.center}
+
+But what's so special about this? ...
+
+. . .
+
+::: {.nonincremental}
+1. Highly performant
+2. Simple and robust
+3. Designed for production
+:::
+
+## Integration with Base R
+
+Request by R Core (Luke Tierney) at R Project Sprint 2023
+
+* `mirai` added as the first alternative communications backend for the base `parallel` package
+
+. . .
+
+```{.r}
+library(parallel)
+
+cl <- mirai::make_cluster(2)
+cl
+#> < miraiCluster | ID: `0` nodes: 2 active: TRUE >
+
+parLapply(cl, 1:2, rnorm)
+#> [[1]]
+#> [1] -0.5697883
+#> 
+#> [[2]]
+#> [1] 0.3798926 0.8945085
+
+```
+
+## Integration with Shiny
+
+```{.r code-line-numbers="8,13-17,21"}
+library(shiny)
+library(bslib)
+library(mirai)
+
+ui <- page_fluid(
+  numericInput("n", "Sample size (n)", 100),
+  numericInput("delay", "Seconds to take for plot", 5),
+  input_task_button("btn", "Plot uniform distribution"),
+  plotOutput("plot")
+)
+
+server <- function(input, output, session) {
+  task <- ExtendedTask$new(
+    function(...) mirai({Sys.sleep(y); runif(x)}, ...)
+  ) |> bind_task_button("btn")
+  observeEvent(input$btn, task$invoke(x = input$n, y = input$delay))
+  output$plot <- renderPlot(hist(task$result()))
+}
+
+app <- shinyApp(ui = ui, server = server)
+with(daemons(3), runApp(app))
+```
+
+## Integration with Plumber
+
+```{.r}
+library(plumber)
+library(promises)
+library(mirai)
+
+pr() |>
+  pr_get(
+    "/echo",
+    function(req, res) {
+      mirai(
+        list(status = 200L, body = list(msg = msg)),
+        msg = req[["HEADERS"]][["msg"]]
+      ) %...>% (function(x) {
+          res$status <- x$status
+          res$body <- x$body
+        })
+    }
+  ) |>
+  pr_run(host = "127.0.0.1", port = 8985)
+```
+
+
+# crew
 
 ---
 
@@ -44,8 +176,6 @@ class: inverse, center, middle, chapter-slide
   <li>Centralized <code>R6</code> interface for tasks.</li>
   <li>Worker auto-scaling to respond fluctuating task loads.</li>
 </ul>
-
----
 
 ## Moju Kapu in `crew`
 
@@ -76,8 +206,6 @@ class: inverse, center, middle, chapter-slide
 
 ]
 
----
-
 ## `R6` classes
 
 | **Class** | **About** | 
@@ -90,15 +218,11 @@ class: inverse, center, middle, chapter-slide
 | **Launcher** | Launches workers. Subclasses for plugins. |
 | **Async** | Parallelize worker launches. |
 
----
-
 ## `R6` object composition
 
 <center>
 <img src="./images/crew-design.png" width=400>
 </center>
-
----
 
 ## `mirai` tasks, different interface
 
@@ -123,8 +247,6 @@ controller$pop()$result[[1]]
 #> [1] 3
 ```
 
----
-
 ## Different plugin, different controller
 
 ```{r, eval = FALSE}
@@ -145,8 +267,6 @@ controller$walk(
   data = list(expensive_task = expensive_task)
 )
 ```
-
----
 
 ## Write your own launcher plugin
 
@@ -172,8 +292,6 @@ custom_launcher_class <- R6::R6Class(
 )
 ```
 
----
-
 ## Controller wrapper
 
 * Tutorial to write plugins: <https://wlandau.github.io/crew/articles/plugins.html>
@@ -192,3 +310,4 @@ crew_controller_custom <- function(...) {
   controller
 }
 ```
+
