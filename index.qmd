@@ -16,6 +16,8 @@ editor:
     render-on-save: true
 ---
 
+## {.center}
+
 <style>
 h1 {
   font-size: 1.6em !important;
@@ -25,9 +27,53 @@ h2 {
 }
 </style>
 
+<img src="images/mojukapu.png" />
+
+`moju-kapu` （モジュカプ） is shorthand for `modular encapsulation` （モジュラーカプセル化）
+
+. . .
+
+::: {.nonincremental}
+- Balance
+- Effective stand-alone tools < > entire integrated systems
+
+- Natural limits of a package
+- Interfaces for developers as well as end-users
+- Layered engineering approach
+:::
+
+## The Back Story
+
+- Why targets needed `crew`?
+
+- What was missing for `crew` to become feasible?
+
+- How `mirai` provided the solution.
+
+## The Back Story (Cont'd)
+
+::: {.nonincremental}
+
+- Feb 2023 - CG/WL collaboration starts
+
+- Mar 2023 - initial `mirai` backend for `crew`
+
+- Apr 2023 - `targets` 1.0.0 with `crew` integration
+
+- Jul 2023 - TLS lands in `mirai` and `crew`
+
+- Oct 2023 - `mirai` implements parallel backend for R
+
+- Dec 2023 - `mirai` serialization initial support for `torch`
+
+- Mar 2024 - `mirai` serialization supports ADBC database hosting
+
+- May 2024 - `mirai` 1.0.0 - implements next-gen promises
+:::
+
 # mirai
 
-## 未来
+## {.center}
 ::: {.nonincremental}
 
 みらい &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / mI ˈ ra ˈ i: /
@@ -36,122 +82,48 @@ h2 {
 n. future
 :::
 
-![](images/mirai.png)
-
-##
-
-```{.r code-line-numbers="|7-10|3-4,11|6-12|14-15|17-18|20-21|23-25"}
-library(mirai)
-
-a <- 1
-b <- 2
-
-m <- mirai(
-  {
-    Sys.sleep(5)
-    a + b
-  },
-  environment()
-)
-
-m
-#> < mirai | $data >
-
-m$data
-#> 'unresolved' logi NA
-
-m[]
-#> [1] 3
-
-m$data
-#> [1] 3
-```
+Minimalist Async Evaluation Framework for R
 
 ## {.center}
 
-But what's so special about this? ...
+mirai - Designed for Production
 
 . . .
 
+:::: {.columns}
+
+::: {.column width="50%"}
 ::: {.nonincremental}
-1. Highly performant
-2. Simple and robust
-3. Designed for production
+1. High Performance
+2. Simple and Robust
+3. Massively Scalable
+
+:::
 :::
 
-## Integration with Base R
+::: {.column width="50%"}
+::: {.nonincremental}
+- 100x faster
+- WYSIWYG concept
+- one million promises
 
-Request by R Core (Luke Tierney) at R Project Sprint 2023
+:::
+:::
+::::
 
-* `mirai` added as the first alternative communications backend for the base `parallel` package
+## External Encapsulation
 
-. . .
+[<img alt="R parallel" src="https://www.r-project.org/logo/Rlogo.png" width="40" />](https://shikokuchuo.net/mirai/articles/parallel.html) &nbsp; An alternative communications backend for R, implementing a request by R-Core at R Project Sprint 2023
 
-```{.r}
-library(parallel)
+[<img alt="promises" src="https://docs.posit.co/images/posit-ball.png" width="40" />](https://shikokuchuo.net/mirai/articles/promises.html) &nbsp; Next generation completely event-driven promises
 
-cl <- mirai::make_cluster(2)
-cl
-#> < miraiCluster | ID: `0` nodes: 2 active: TRUE >
+[<img alt="Shiny" src="https://github.com/rstudio/shiny/raw/main/man/figures/logo.png" width="40" />](https://shikokuchuo.net/mirai/articles/shiny.html) &nbsp; Asynchronous parallel / distributed backend
 
-parLapply(cl, 1:2, rnorm)
-#> [[1]]
-#> [1] -0.5697883
-#> 
-#> [[2]]
-#> [1] 0.3798926 0.8945085
+[<img alt="Plumber" src="https://rstudio.github.io/cheatsheets/html/images/logo-plumber.png" width="40" />](https://shikokuchuo.net/mirai/articles/plumber.html) &nbsp; Asynchronous parallel / distributed backend
 
-```
+[<img alt="Arrow" src="https://arrow.apache.org/img/arrow-logo_hex_black-txt_white-bg.png" width="40" />](https://shikokuchuo.net/mirai/articles/databases.html) &nbsp; Host ADBC database connections in daemon processes
 
-## Integration with Shiny
-
-```{.r code-line-numbers="8,13-17,21"}
-library(shiny)
-library(bslib)
-library(mirai)
-
-ui <- page_fluid(
-  numericInput("n", "Sample size (n)", 100),
-  numericInput("delay", "Seconds to take for plot", 5),
-  input_task_button("btn", "Plot uniform distribution"),
-  plotOutput("plot")
-)
-
-server <- function(input, output, session) {
-  task <- ExtendedTask$new(
-    function(...) mirai({Sys.sleep(y); runif(x)}, ...)
-  ) |> bind_task_button("btn")
-  observeEvent(input$btn, task$invoke(x = input$n, y = input$delay))
-  output$plot <- renderPlot(hist(task$result()))
-}
-
-app <- shinyApp(ui = ui, server = server)
-with(daemons(3), runApp(app))
-```
-
-## Integration with Plumber
-
-```{.r}
-library(plumber)
-library(promises)
-library(mirai)
-
-pr() |>
-  pr_get(
-    "/echo",
-    function(req, res) {
-      mirai(
-        list(status = 200L, body = list(msg = msg)),
-        msg = req[["HEADERS"]][["msg"]]
-      ) %...>% (function(x) {
-          res$status <- x$status
-          res$body <- x$body
-        })
-    }
-  ) |>
-  pr_run(host = "127.0.0.1", port = 8985)
-```
-
+[<img alt="torch" src="https://torch.mlverse.org/css/images/hex/torch.png" width="40" />](https://shikokuchuo.net/mirai/articles/torch.html) &nbsp; Seamless cross-process use of Torch tensors and models
 
 # crew
 
@@ -310,4 +282,95 @@ crew_controller_custom <- function(...) {
   controller
 }
 ```
+
+# Appendix
+
+# 1. mirai Design Concepts
+
+## 100x Faster
+
+Setup:
+
+``` r
+library(mirai)
+library(future)
+
+d <- daemons(1, dispatcher = FALSE)
+plan("multisession", workers = 1)
+
+m <- mirai(1)
+collect_mirai(m)
+#> [1] 1
+
+f <- future(1)
+value(f)
+#> [1] 1
+```
+
+<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org)</sup>
+
+## 100x Faster (Cont'd)
+
+Benchmarking:
+
+``` r
+bench::mark(mirai(1), future(1), relative = TRUE, check = FALSE)
+#> # A tibble: 2 × 6
+#>   expression   min median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
+#> 1 mirai(1)      1      1       74.6      1        1   
+#> 2 future(1)   158.   113.       1        5.72     2.75
+
+bench::mark(collect_mirai(m), value(f), relative = TRUE)
+#> # A tibble: 2 × 6
+#>   expression         min median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr>       <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
+#> 1 collect_mirai(m)   1      1        84.1       Inf      NaN
+#> 2 value(f)          79.3   89.0       1         NaN      Inf
+```
+
+<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org)</sup>
+
+## WYSIWYG Concept
+
+Production usage requires 'correctness' over 'convenience'.
+
+Code behaves as written. There is no reliance on non-transparent static code analysis, which can result in inefficient behaviour, or even fail due to hidden global options:
+
+``` r
+library(mirai)
+library(future)
+df <- list(a = double(1e8), b = 1)
+
+m <- mirai(2 * x, x = df$b)
+m[]
+#> [1] 2
+
+f <- future(2 * df$b)
+#> Error in getGlobalsAndPackages(expr, envir = envir, tweak =
+#> tweakExpression, : The total size of the 1 globals exported for
+#> future expression ('2 * df$b') is 762.94 MiB.. This exceeds the
+#> maximum allowed size of 500.00 MiB (option 'future.globals.maxSize')
+#> . There is one global: 'df' (762.94 MiB of class 'list')
+```
+## One Million Promises
+
+``` r
+library(mirai)
+daemons(8, dispatcher = FALSE)
+#> [1] 8
+
+r <- 0
+start <- Sys.time()
+m <- mirai_map(1:1000000, \(x) x, .promise = \(x) r <<- r + x)
+Sys.time() - start
+#> Time difference of 6.42396 mins
+
+later::run_now()
+r
+#> [1] 500000500000
+```
+
+<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org) <br />
+Running on an Intel i7 Gen 11 notebook with 16GB RAM.</sup>
 
