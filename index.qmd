@@ -143,15 +143,17 @@ mirai - Designed for Production
 <img src="./images/crew-package-row.png" width=700>
 </center>
 
-<ul style="font-size: 30px">
-  <li>Extends <code>mirai</code> to distributed computing environments.</li>
-  <li>Centralized <code>R6</code> interface for tasks.</li>
-  <li>Worker auto-scaling to respond fluctuating task loads.</li>
-</ul>
+
+* **Original motivation**: enhances parallel computing in `targets`.
+* Extends `mirai` to distributed computing environments.
+* Centralized `R6` interface for tasks.
+* Worker auto-scaling to respond fluctuating task loads.
 
 ## Moju Kapu in `crew`
 
-.pull-left[
+:::: {.columns style="font-size: 75%"}
+
+::: {.column width="50%"}
 
 ### Encapsulation
 
@@ -162,9 +164,9 @@ mirai - Designed for Production
 * Uses `mirai` developer interface: `daemon()`, `nextget()`, `saisei()` etc.
 * `R6` class system for the controller interface.
 
-]
+:::
 
-.pull-right[
+::: {.column width="50%"}
 
 ### Modularity
 
@@ -176,21 +178,13 @@ mirai - Designed for Production
 * Docs guide users to write their own plugins.
 * Existing encapsulated plugins for SLURM, AWS Batch, etc.
 
-]
+:::
 
-## `R6` classes
-
-| **Class** | **About** | 
-|---|---|
-| **Controller group** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Interface for many controllers. |
-| **Controller** | Central task interface. |
-| **Tasks** | List of `mirai` task objects. | 
-| **Client** | `mirai` TCP connection hub. |
-| **Relay** | Coordinate `mirai` synchronization primitives. |
-| **Launcher** | Launches workers. Subclasses for plugins. |
-| **Async** | Parallelize worker launches. |
+::::
 
 ## `R6` object composition
+
+<br>
 
 <center>
 <img src="./images/crew-design.png" width=400>
