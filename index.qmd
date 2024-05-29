@@ -127,160 +127,151 @@ mirai - Designed for Production
 
 # crew
 
----
-
-## Re-encapsulating `mirai`
+## `crew`: Moju Kapu for `mirai`
 
 <center>
-<img src="./images/crew.png" width=400>
+<img src="./images/crew-core.png" width=500>
 </center>
 
----
+* **Motivation**: auto-scaled parallel computing for `targets`.
+* **Encapsulation**: `R6` interface for `mirai` tasks and workers.
+* **Modularity**: plugins for different computing environments.
 
-## Why `crew`?
+## Encapsulation: `R6` classes to wrap `mirai`
 
-<center>
-<img src="./images/crew-package-row.png" width=700>
-</center>
+:::: {.columns  style="font-size: 90%;"}
 
-<ul style="font-size: 30px">
-  <li>Extends <code>mirai</code> to distributed computing environments.</li>
-  <li>Centralized <code>R6</code> interface for tasks.</li>
-  <li>Worker auto-scaling to respond fluctuating task loads.</li>
-</ul>
+::: {.column width="45%"}
 
-## Moju Kapu in `crew`
-
-.pull-left[
-
-### Encapsulation
-
-<center>
-<img src="./images/crew-core.png" width=250>
-</center>
-
-* Uses `mirai` developer interface: `daemon()`, `nextget()`, `saisei()` etc.
-* `R6` class system for the controller interface.
-
-]
-
-.pull-right[
-
-### Modularity
-
-<center>
-<img src="./images/crew-plugins.png" width=250>
-</center>
-
-* Plugin system to launch parallel workers on different environments.
-* Docs guide users to write their own plugins.
-* Existing encapsulated plugins for SLURM, AWS Batch, etc.
-
-]
-
-## `R6` classes
-
-| **Class** | **About** | 
-|---|---|
-| **Controller group** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Interface for many controllers. |
-| **Controller** | Central task interface. |
-| **Tasks** | List of `mirai` task objects. | 
-| **Client** | `mirai` TCP connection hub. |
-| **Relay** | Coordinate `mirai` synchronization primitives. |
-| **Launcher** | Launches workers. Subclasses for plugins. |
-| **Async** | Parallelize worker launches. |
-
-## `R6` object composition
+<br>
 
 <center>
 <img src="./images/crew-design.png" width=400>
 </center>
 
-## `mirai` tasks, different interface
+:::
 
-```{r, eval = FALSE}
-# Start a controller.
-library(crew)
-controller <- crew_controller_local(
-  workers = 2,
-  seconds_idle = 10
+::: {.column width="55%"}
+
+<br>
+
+```{r, eval = FALSE, echo = TRUE}
+# Start a new controller.
+x <- crew::crew_controller_local(
+  workers = 10,
+  seconds_idle = 30
 )
-controller$start()
 
-# Submit tasks asynchronously.
-controller$push(command = 1 + 1)
-controller$push(command = sqrt(9))
+# Submit many parallel tasks.
+x$walk(
+  rnorm(1, x),
+  iterate = list(x = seq_len(1000))
+)
 
-# Wait for a task to finish.
-controller$wait(mode = "one")
+# Optional: wait for all tasks.
+x$wait(mode = "all")
 
-# Collect the result.
-controller$pop()$result[[1]]
-#> [1] 3
+# Collect results so far.
+str(unlist(x$collect()$result))
+#> num [1:1000] 3.2 4.1 2.31 ...
 ```
 
-## Different plugin, different controller
+:::
 
-```{r, eval = FALSE}
-# Start an AWS Batch controller with many workers.
-library(crew.aws.batch)
-controller <- crew_controller_aws_batch(
-  workers = 100,
-  seconds_idle = 60,
-  aws_batch_job_definition = "YOUR_JOB_DEFINITION",
-  aws_batch_job_queue = "YOUR_JOB_QUEUE"
-)
-controller$start()
+::::
 
-# Submit many tasks asynchronously.
-controller$walk(
-  command = your_expensive_task(data = object),
-  iterate = list(object = list_of_objects),
-  data = list(expensive_task = expensive_task)
+
+## Modularity: `crew` plugins
+
+:::: {.columns  style="font-size: 70%;"}
+
+::: {.column width="50%"}
+
+
+<center>
+<img src="./images/crew.png" width=150>
+</center>
+
+```{r, echo = TRUE, eval = FALSE}
+crew_controller_local()
+```
+
+<br>
+
+<center>
+<img src="./images/crew.cluster.png" width=150>
+</center>
+
+```{r, echo = TRUE, eval = FALSE}
+crew_controller_slurm(
+  slurm_memory_gigabytes_per_cpu = 16,
+  script_lines = "module load R/4.4.0"
 )
 ```
 
-## Write your own launcher plugin
+:::
 
-* Tutorial to write plugins: <https://wlandau.github.io/crew/articles/plugins.html>
+::: {.column width="50%"}
 
-```{r, eval = FALSE}
-custom_launcher_class <- R6::R6Class(
-  classname = "custom_launcher_class",
-  inherit = crew::crew_class_launcher,
-  public = list(
-    launch_worker = function(call, name, launcher, worker, instance) { #<<
-      bin <- file.path(R.home("bin"), "R")
-      processx::process$new(
-        command = bin,
-        args = c("-e", call),
-        cleanup = FALSE
-      )
-    },
-    terminate_worker = function(handle) { #<<
-      handle$signal(crew::crew_terminate_signal())
-    }
+<center>
+<img src="./images/crew.aws.batch.png" width=150>
+</center>
+
+```{r, echo = TRUE, eval = FALSE}
+crew_controller_aws_batch(
+  aws_batch_job_definition = "your_def",
+  aws_batch_job_queue = "your_queue"
+)
+```
+
+<center>
+<img src="./images/hex-custom.png" width=150>
+</center>
+
+```{r, echo = TRUE, eval = FALSE}
+your_custom_controller(...)
+```
+
+<https://wlandau.github.io/crew/articles/plugins.html>
+
+:::
+
+::::
+
+## `targets` accepts any `crew` controller
+
+:::: {.columns}
+
+::: {.column width="20%"}
+
+<center>
+<img src="./images/targets.png">
+</center>
+
+:::
+
+::: {.column width="80%"}
+
+
+<center>
+<img src="./images/graph.png">
+</center>
+
+:::
+
+::::
+
+```{r, eval = FALSE, echo = TRUE}
+tar_option_set(
+  controller = crew_controller_aws_batch(
+    workers = 3,
+    seconds_idle = 60,
+    aws_batch_job_definition = "your_def",
+    aws_batch_job_queue = "your_queue",
+    aws_batch_region = "us-east-2"
+
   )
 )
-```
-
-## Controller wrapper
-
-* Tutorial to write plugins: <https://wlandau.github.io/crew/articles/plugins.html>
-
-```{r, eval = FALSE}
-#' @title Create a controller with the custom launcher.
-#' @export
-#' @description Create an `R6` object to submit tasks and
-#'   launch workers.
-#' @inheritParams crew::crew_controller_local
-crew_controller_custom <- function(...) {
-  client <- crew::crew_client(...)
-  launcher <- custom_launcher_class$new(...) #<<
-  controller <- crew::crew_controller(client = client, launcher = launcher) #<<
-  controller$validate()
-  controller
-}
 ```
 
 # Appendix
