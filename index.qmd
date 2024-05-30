@@ -34,25 +34,29 @@ h2 {
 . . .
 
 ::: {.nonincremental}
-- Balance
 - Effective stand-alone tools < > entire integrated systems
-
 - Natural limits of a package
 - Interfaces for developers as well as end-users
 - Layered engineering approach
 :::
 
-## The Back Story
+## {.center}
 
-- Why targets needed `crew`?
+Our Journey
 
-- What was missing for `crew` to become feasible?
+- The missing piece in `targets`<br />
+(Function-oriented Make-like declarative workflows for R)
 
-- How `mirai` provided the solution.
+- The genesis of `crew`<br />
+(A distributed worker launcher)
 
-## The Back Story (Cont'd)
+- Collaborative development with `mirai`<br />
+(Minimalist Async Evaluation Framework for R)
+
+## {.center}
 
 ::: {.nonincremental}
+A Brief Timeline
 
 - Feb 2023 - CG/WL collaboration starts
 
@@ -66,9 +70,9 @@ h2 {
 
 - Dec 2023 - `mirai` serialization initial support for `torch`
 
-- Mar 2024 - `mirai` serialization supports ADBC database hosting
+- Mar 2024 - `mirai` supports ADBC database hosting
 
-- May 2024 - `mirai` 1.0.0 - implements next-gen promises
+- May 2024 - `mirai` implements next-gen promises
 :::
 
 # mirai
@@ -76,17 +80,24 @@ h2 {
 ## {.center}
 ::: {.nonincremental}
 
-みらい &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / mI ˈ ra ˈ i: /
-
-
-n. future
+<img alt="mirai logo" src="images/mirai.png" width="120" />
+mirai - the / moju kapu /
 :::
 
-Minimalist Async Evaluation Framework for R
+. . . 
+
+::: {.nonincremental}
+
+* **Motivation**: production-grade parallel computing for R
+* **Encapsulation**: developer interface for 3rd party launchers
+* **Modularity**: compute profiles (modular by design)
+
+:::
 
 ## {.center}
 
-mirai - Designed for Production
+<img alt="mirai logo" src="images/mirai.png" width="120" />
+mirai - [ Designed for Production ]
 
 . . .
 
@@ -111,9 +122,11 @@ mirai - Designed for Production
 :::
 ::::
 
-## External Encapsulation
+## {.center}
 
-[<img alt="R parallel" src="https://www.r-project.org/logo/Rlogo.png" width="40" />](https://shikokuchuo.net/mirai/articles/parallel.html) &nbsp; An alternative communications backend for R, implementing a request by R-Core at R Project Sprint 2023
+mirai < Encapsulation >
+
+[<img alt="R parallel" src="https://www.r-project.org/logo/Rlogo.png" width="40" />](https://shikokuchuo.net/mirai/articles/parallel.html) &nbsp; An alternative communications backend for R
 
 [<img alt="promises" src="https://docs.posit.co/images/posit-ball.png" width="40" />](https://shikokuchuo.net/mirai/articles/promises.html) &nbsp; Next generation completely event-driven promises
 
@@ -121,7 +134,7 @@ mirai - Designed for Production
 
 [<img alt="Plumber" src="https://rstudio.github.io/cheatsheets/html/images/logo-plumber.png" width="40" />](https://shikokuchuo.net/mirai/articles/plumber.html) &nbsp; Asynchronous parallel / distributed backend
 
-[<img alt="Arrow" src="https://arrow.apache.org/img/arrow-logo_hex_black-txt_white-bg.png" width="40" />](https://shikokuchuo.net/mirai/articles/databases.html) &nbsp; Host ADBC database connections in daemon processes
+[<img alt="Arrow" src="https://arrow.apache.org/img/arrow-logo_hex_black-txt_white-bg.png" width="40" />](https://shikokuchuo.net/mirai/articles/databases.html) &nbsp; Host ADBC database connections in background processes
 
 [<img alt="torch" src="https://torch.mlverse.org/css/images/hex/torch.png" width="40" />](https://shikokuchuo.net/mirai/articles/torch.html) &nbsp; Seamless cross-process use of Torch tensors and models
 
@@ -133,9 +146,9 @@ mirai - Designed for Production
 <img src="./images/crew-core.png" width=500>
 </center>
 
-* **Motivation**: auto-scaled parallel computing for `targets`.
-* **Encapsulation**: `R6` interface for `mirai` tasks and workers.
-* **Modularity**: plugins for different computing environments.
+* **Motivation**: auto-scaled parallel computing for `targets`
+* **Encapsulation**: `R6` interface for `mirai` tasks and workers
+* **Modularity**: plugins for different computing environments
 
 ## Encapsulation: `R6` classes to wrap `mirai`
 
@@ -326,7 +339,7 @@ bench::mark(collect_mirai(m), value(f), relative = TRUE)
 
 Production usage requires 'correctness' over 'convenience'.
 
-Code behaves as written. There is no reliance on non-transparent static code analysis, which can result in inefficient behaviour, or even fail due to hidden global options:
+No reliance on non-transparent static code analysis, which can be inefficient, or fail due to hidden global options:
 
 ``` r
 library(mirai)
