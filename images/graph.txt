@@ -1,0 +1,28 @@
+graph LR
+  style Legend fill:#FFFFFF00,stroke:#000000;
+  style Graph fill:#FFFFFF00,stroke:#000000;
+  subgraph Legend
+    direction TB
+    xf1522833a4d242c5([""Up to date""]):::uptodate --- x2db1ec7a48f65a9b([""Outdated""]):::outdated
+    x2db1ec7a48f65a9b([""Waiting""]):::outdated --- xd03d7c7dd2ddda2b([""Stem""]):::outdated
+    xd03d7c7dd2ddda2b([""Running""]):::running 
+  end
+  subgraph Graph
+    direction LR
+    x9755545176a05140(["data"]):::uptodate --> x4e3ba95cabf324ac(["model_joint"]):::running
+    x9755545176a05140(["data"]):::uptodate --> xf4d3175183d0fe6a(["model_pathfinder"]):::uptodate
+    xf4d3175183d0fe6a(["model_pathfinder"]):::uptodate --> xac18407c57120771(["summary_pathfinder"]):::running
+    xcefe76d3b82ee85b(["results"]):::outdated --> xae64cf6526fa21dc(["quarto_report"]):::outdated
+    xe139e00ce2ac05bf(["model_ndlm"]):::running --> x3d41ec579aac9ee2(["summary_ndlm"]):::outdated
+    x9755545176a05140(["data"]):::uptodate --> xe139e00ce2ac05bf(["model_ndlm"]):::running
+    xa4ab7c363407ac11(["summary_joint"]):::outdated --> xcefe76d3b82ee85b(["results"]):::outdated
+    x3d41ec579aac9ee2(["summary_ndlm"]):::outdated --> xcefe76d3b82ee85b(["results"]):::outdated
+    xac18407c57120771(["summary_pathfinder"]):::running --> xcefe76d3b82ee85b(["results"]):::outdated
+    x4e3ba95cabf324ac(["model_joint"]):::running --> xa4ab7c363407ac11(["summary_joint"]):::outdated
+  end
+  classDef uptodate stroke:#000000,color:#ffffff,fill:#354823;
+  classDef outdated stroke:#000000,color:#000000,fill:#78B7C5;
+  classDef running stroke:#000000,color:#000000,fill:#FFA500;
+  classDef none stroke:#000000,color:#000000,fill:#94a4ac;
+  linkStyle 0 stroke-width:0px;
+  linkStyle 1 stroke-width:0px;
