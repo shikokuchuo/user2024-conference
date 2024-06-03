@@ -140,15 +140,60 @@ mirai < Encapsulation >
 
 # crew
 
-## `crew`: Moju Kapu for `mirai`
+## Motivation for `crew`
 
 <center>
-<img src="./images/crew-core.png" width=500>
+<img src="./images/targets.png" width=200>
 </center>
 
-* **Motivation**: auto-scaled parallel computing for `targets`
-* **Encapsulation**: `R6` interface for `mirai` tasks and workers
-* **Modularity**: plugins for different computing environments
+::: {style="font-size: 85%;"}
+
+* `targets` is a pipeline tool for reproducible computation at scale in R.
+* Before `crew`, `targets` struggled to:
+    1. Scale out parallel workers to meet demand.
+    2. Scale in parallel workers to conserve resources.
+    3. Tailor itself to arbitrary distributed computing environments.
+
+:::
+
+## A `targets` pipeline
+
+![](./images/autoscale1.png)
+
+## A worker is an R process that runs tasks
+
+![](./images/autoscale2.png)
+
+## Add workers to meet demand
+
+![](./images/autoscale3.png)
+
+## Reuse workers for subsequent tasks
+
+![](./images/autoscale4.png)
+
+
+## Discard workers no longer needed
+
+![](./images/autoscale5.png)
+
+## Moju Kapu: how `mirai` supports `crew`
+
+<center>
+<img src="./images/crew-core.png" width=400>
+</center>
+
+
+::: {style="font-size: 85%"}
+
+* `mirai` / `crew` integration:
+    * `mirai` controls the tasks, and `crew` controls the workers.
+    * Previously considered Redis to send tasks, but `mirai` is ideal.
+* Moju kapu design of `crew`:
+    * **Encapsulation**: centralized `R6` "controller" interface
+    * **Modularity**: plugins for different computing environments
+
+:::
 
 ## Encapsulation: `R6` classes to wrap `mirai`
 
