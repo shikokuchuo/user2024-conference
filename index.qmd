@@ -146,7 +146,7 @@ mirai < Encapsulation >
 <img src="./images/targets.png" width=200>
 </center>
 
-::: {style="font-size: 85%;"}
+::: {.nonincremental style="font-size: 85%;"}
 
 * `targets` is a pipeline tool for reproducible computation at scale in R.
 * Before `crew`, `targets` struggled to:
@@ -290,13 +290,44 @@ crew_controller_aws_batch(
 your_custom_controller(...)
 ```
 
-<https://wlandau.github.io/crew/articles/plugins.html>
-
 :::
 
 ::::
 
+
+
+## Users can write `crew` plugins
+
+::: {.nonincremental}
+
+```{r, echo = TRUE, eval = FALSE}
+custom_launcher_class <- R6::R6Class(
+  classname = "custom_launcher_class",
+  inherit = crew::crew_class_launcher,
+  public = list(
+    launch_worker = function(call, name, launcher, worker, instance) {
+
+      # 1. Reserve compute for R to run, e.g. start a job on a cluster.
+      # 2. Make that job start an R process.
+      # 3. Make that R process run the code in `call`.
+
+    },
+    terminate_worker = function(handle) {
+
+      # Terminate a worker.
+
+    }
+  )
+)
+```
+
+* How to write a `crew` plugin: <https://wlandau.github.io/crew/articles/plugins.html>
+
+:::
+
 ## `targets` accepts any `crew` controller
+
+::: {.nonincremental}
 
 :::: {.columns}
 
@@ -327,10 +358,13 @@ tar_option_set(
     aws_batch_job_definition = "your_def",
     aws_batch_job_queue = "your_queue",
     aws_batch_region = "us-east-2"
-
   )
 )
 ```
+
+* <https://books.ropensci.org/targets/crew.html>
+
+:::
 
 # Appendix
 
