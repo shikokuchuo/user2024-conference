@@ -53,28 +53,6 @@ Our Journey
 - Collaborative development with `mirai`<br />
 (Minimalist Async Evaluation Framework for R)
 
-## {.center}
-
-::: {.nonincremental}
-A Brief Timeline
-
-- Feb 2023 - CG/WL collaboration starts
-
-- Mar 2023 - initial `mirai` backend for `crew`
-
-- Apr 2023 - `targets` 1.0.0 with `crew` integration
-
-- Jul 2023 - TLS lands in `mirai` and `crew`
-
-- Oct 2023 - `mirai` implements parallel backend for R
-
-- Dec 2023 - `mirai` serialization initial support for `torch`
-
-- Mar 2024 - `mirai` supports ADBC database hosting
-
-- May 2024 - `mirai` implements next-gen promises
-:::
-
 # mirai
 
 ## {.center}
@@ -138,7 +116,7 @@ mirai < Encapsulation >
 
 [<img alt="torch" src="https://torch.mlverse.org/css/images/hex/torch.png" width="40" />](https://shikokuchuo.net/mirai/articles/torch.html) &nbsp; Seamless cross-process use of Torch tensors and models
 
-# crew
+# Extending `mirai` with `crew`
 
 ## Motivation for `crew`
 
@@ -149,10 +127,25 @@ mirai < Encapsulation >
 ::: {.nonincremental style="font-size: 85%;"}
 
 * `targets` is a pipeline tool for reproducible computation at scale in R.
-* Before `crew`, `targets` struggled to:
-    1. Scale out parallel workers to meet demand.
-    2. Scale in parallel workers to conserve resources.
-    3. Tailor itself to arbitrary distributed computing environments.
+* Manages large workflows in statistics and data science:
+    * Bayesian data analysis
+    * Machine learning
+    * Simulation of clinical trials
+    * Genomic data analysis
+
+:::
+
+## Challenges
+
+<center>
+<img src="./images/targets.png" width=200>
+</center>
+
+::: {.nonincremental style="font-size: 85%;"}
+
+1. Scale out parallel workers to meet demand.
+2. Scale in parallel workers to conserve resources.
+3. Tailor itself to arbitrary distributed computing environments.
 
 :::
 
@@ -177,23 +170,46 @@ mirai < Encapsulation >
 
 ![](./images/autoscale5.png)
 
-## Moju Kapu: how `mirai` supports `crew`
+## Beginnings: `mirai` and `crew`
 
 <center>
-<img src="./images/crew-core.png" width=400>
+<img src="./images/crew-core.png" width=300>
 </center>
 
+::: {style="font-size:85%"}
 
-::: {style="font-size: 85%"}
-
-* `mirai` / `crew` integration:
-    * `mirai` controls the tasks, and `crew` controls the workers.
-    * Previously considered Redis to send tasks, but `mirai` is ideal.
-* Moju kapu design of `crew`:
-    * **Encapsulation**: centralized `R6` "controller" interface
-    * **Modularity**: plugins for different computing environments
+* `crew` needed a backend to communicate with parallel workers over a local network connection.
+* Originally considered Redis, but `mirai` is ideal:
+    * Does not depend on Redis server.
+    * Can send larger data objects over the network.
+* `crew` began using `mirai` in February 2023.
 
 :::
+
+## How `mirai` supports `crew`
+
+<center>
+<img src="./images/crew-core.png" width=300>
+</center>
+
+::: {style="font-size:85%"}
+
+* `crew` launches workers, `mirai` sends tasks to workers.
+* `mirai` supports modular building blocks for `crew`:
+   * **`mirai::daemon(url = "...")`: turn any R process into a worker on the network.**
+   * `mirai::saisei()`: rotates websocket connections.
+   * Down-scaling workers: maximum idle time, maximum number of tasks.
+
+:::
+
+## Moju Kapu design of `crew`
+
+<center>
+<img src="./images/crew-core.png" width=300>
+</center>
+
+* **Encapsulation**: centralized `R6` "controller" interface
+* **Modularity**: plugins for different computing environments
 
 ## Encapsulation: `R6` classes to wrap `mirai`
 
