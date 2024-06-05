@@ -67,17 +67,132 @@ mirai - the / moju kapu /
 ::: {.nonincremental}
 
 * **Motivation**: production-grade parallel computing for R
+* **Modularity**: interfaces with and enhances top packages
 * **Encapsulation**: developer interface for 3rd party launchers
-* **Modularity**: compute profiles (modular by design)
 
 :::
 
-## {.center}
+# mirai: motivation
+
+##
 
 <img alt="mirai logo" src="images/mirai.png" width="120" />
 mirai - [ Designed for Production ]
 
 . . .
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.nonincremental}
+1. High Performance
+
+:::
+:::
+
+::: {.column width="50%"}
+::: {.nonincremental}
+- 100x faster
+
+:::
+:::
+::::
+
+## 100x Faster
+
+Benchmarking:
+
+
+```{.r code-line-numbers="|6|13|"}
+bench::mark(mirai(1), future(1), relative = TRUE, check = FALSE)
+#> # A tibble: 2 × 6
+#>   expression   min median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
+#> 1 mirai(1)      1      1       74.6      1        1   
+#> 2 future(1)   158.   113.       1        5.72     2.75
+
+bench::mark(collect_mirai(m), value(f), relative = TRUE)
+#> # A tibble: 2 × 6
+#>   expression         min median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr>       <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
+#> 1 collect_mirai(m)   1      1        84.1       Inf      NaN
+#> 2 value(f)          79.3   89.0       1         NaN      Inf
+```
+
+<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org)</sup>
+
+##
+
+<img alt="mirai logo" src="images/mirai.png" width="120" />
+mirai - [ Designed for Production ]
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.nonincremental}
+1. High Performance
+2. Simple and Robust
+
+:::
+:::
+
+::: {.column width="50%"}
+::: {.nonincremental}
+- 100x faster
+- WYSIWYG concept
+
+:::
+:::
+::::
+
+## WYSIWYG Concept
+
+Production usage requires 'correctness' over 'convenience'
+
+Compare and contrast:
+
+:::: {.columns}
+::: {.column width="50%"}
+
+``` r
+library(mirai)
+
+d <- list(a = double(1e8), b = 1)
+
+m <- mirai(2 * x, x = d$b)
+m[]
+#> [1] 2
+```
+:::
+
+::: {.column width="50%"}
+
+``` r
+library(future)
+
+d <- list(a = double(1e8), b = 1)
+
+f <- future(2 * d$b)
+#> Error in getGlobalsAndPackages(
+#> expr, envir = envir, tweak =
+#> tweakExpression, : The total
+#> size of the 1 globals exported
+#> for future expression ('2 *
+#> d$b') is 762.94 MiB.. This
+#> exceeds the maximum allowed
+#> size of 500.00 MiB (option
+#> 'future.globals.maxSize').
+#> There is one global: 'd'
+#> (762.94 MiB of class 'list')
+```
+
+:::
+::::
+
+##
+
+<img alt="mirai logo" src="images/mirai.png" width="120" />
+mirai - [ Designed for Production ]
 
 :::: {.columns}
 
@@ -100,9 +215,56 @@ mirai - [ Designed for Production ]
 :::
 ::::
 
-## {.center}
+## One Million Promises
 
-mirai < Encapsulation >
+```{.r code-line-numbers="|1-3|5-9|11-13|"}
+library(mirai)
+daemons(8, dispatcher = FALSE)
+#> [1] 8
+
+r <- 0
+start <- Sys.time()
+m <- mirai_map(1:1000000, \(x) x, .promise = \(x) r <<- r + x)
+Sys.time() - start
+#> Time difference of 6.42396 mins
+
+later::run_now()
+r
+#> [1] 500000500000
+```
+
+<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org) <br />
+Running on an Intel i7 Gen 11 notebook with 16GB RAM.</sup>
+
+##
+
+<img alt="mirai logo" src="images/mirai.png" width="120" />
+mirai - [ Designed for Production ]
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.nonincremental}
+1. High Performance
+2. Simple and Robust
+3. Massively Scalable
+
+:::
+:::
+
+::: {.column width="50%"}
+::: {.nonincremental}
+- 100x faster
+- WYSIWYG concept
+- one million promises
+
+:::
+:::
+::::
+
+# mirai: modularity
+
+## Interfaces with and Enhances
 
 [<img alt="R parallel" src="https://www.r-project.org/logo/Rlogo.png" width="40" />](https://shikokuchuo.net/mirai/articles/parallel.html) &nbsp; An alternative communications backend for R
 
@@ -116,7 +278,7 @@ mirai < Encapsulation >
 
 [<img alt="torch" src="https://torch.mlverse.org/css/images/hex/torch.png" width="40" />](https://shikokuchuo.net/mirai/articles/torch.html) &nbsp; Seamless cross-process use of Torch tensors and models
 
-# Extending `mirai` with `crew`
+# mirai: encapsulation
 
 ## Motivation for `crew`
 
@@ -126,7 +288,7 @@ mirai < Encapsulation >
 
 ::: {.nonincremental style="font-size: 85%;"}
 
-* `targets` is a pipeline tool for reproducible computation at scale in R.
+* `targets` is a pipeline tool for reproducible computation at scale in R
 * Manages large workflows in statistics and data science:
     * Bayesian data analysis
     * Machine learning
@@ -143,9 +305,9 @@ mirai < Encapsulation >
 
 ::: {.nonincremental style="font-size: 85%;"}
 
-1. Scale out parallel workers to meet demand.
-2. Scale in parallel workers to conserve resources.
-3. Tailor itself to arbitrary distributed computing environments.
+1. Scale out parallel workers to meet demand
+2. Scale in parallel workers to conserve resources
+3. Tailor itself to arbitrary distributed computing environments
 
 :::
 
@@ -178,11 +340,11 @@ mirai < Encapsulation >
 
 ::: {style="font-size:85%"}
 
-* `crew` needed a backend to communicate with parallel workers over a local network connection.
+* `crew` needed a backend to communicate with parallel workers over a local network connection
 * Originally considered Redis, but `mirai` is ideal:
-    * Does not depend on Redis server.
-    * Can send larger data objects over the network.
-* `crew` began using `mirai` in February 2023.
+    * Does not depend on Redis server
+    * Can send larger data objects over the network
+* `crew` began using `mirai` in February 2023
 
 :::
 
@@ -194,11 +356,11 @@ mirai < Encapsulation >
 
 ::: {style="font-size:85%"}
 
-* `crew` launches workers, `mirai` sends tasks to workers.
+* `crew` launches workers, `mirai` sends tasks to workers
 * `mirai` supports modular building blocks for `crew`:
    * **`mirai::daemon(url = "...")`: turn any R process into a worker on the network.**
-   * `mirai::saisei()`: rotates websocket connections.
-   * Down-scaling workers: maximum idle time, maximum number of tasks.
+   * `mirai::saisei()`: rotates websocket connections
+   * Down-scaling workers: maximum idle time, maximum number of tasks
 
 :::
 
@@ -310,8 +472,6 @@ your_custom_controller(...)
 
 ::::
 
-
-
 ## Users can write `crew` plugins
 
 ::: {.nonincremental}
@@ -337,7 +497,8 @@ custom_launcher_class <- R6::R6Class(
 )
 ```
 
-* How to write a `crew` plugin: <https://wlandau.github.io/crew/articles/plugins.html>
+* How to write a `crew` plugin: <br />
+<https://wlandau.github.io/crew/articles/plugins.html>
 
 :::
 
@@ -381,95 +542,4 @@ tar_option_set(
 * <https://books.ropensci.org/targets/crew.html>
 
 :::
-
-# Appendix
-
-# 1. mirai Design Concepts
-
-## 100x Faster
-
-Setup:
-
-``` r
-library(mirai)
-library(future)
-
-d <- daemons(1, dispatcher = FALSE)
-plan("multisession", workers = 1)
-
-m <- mirai(1)
-collect_mirai(m)
-#> [1] 1
-
-f <- future(1)
-value(f)
-#> [1] 1
-```
-
-<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org)</sup>
-
-## 100x Faster (Cont'd)
-
-Benchmarking:
-
-``` r
-bench::mark(mirai(1), future(1), relative = TRUE, check = FALSE)
-#> # A tibble: 2 × 6
-#>   expression   min median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 mirai(1)      1      1       74.6      1        1   
-#> 2 future(1)   158.   113.       1        5.72     2.75
-
-bench::mark(collect_mirai(m), value(f), relative = TRUE)
-#> # A tibble: 2 × 6
-#>   expression         min median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr>       <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 collect_mirai(m)   1      1        84.1       Inf      NaN
-#> 2 value(f)          79.3   89.0       1         NaN      Inf
-```
-
-<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org)</sup>
-
-## WYSIWYG Concept
-
-Production usage requires 'correctness' over 'convenience'.
-
-No reliance on non-transparent static code analysis, which can be inefficient, or fail due to hidden global options:
-
-``` r
-library(mirai)
-library(future)
-df <- list(a = double(1e8), b = 1)
-
-m <- mirai(2 * x, x = df$b)
-m[]
-#> [1] 2
-
-f <- future(2 * df$b)
-#> Error in getGlobalsAndPackages(expr, envir = envir, tweak =
-#> tweakExpression, : The total size of the 1 globals exported for
-#> future expression ('2 * df$b') is 762.94 MiB.. This exceeds the
-#> maximum allowed size of 500.00 MiB (option 'future.globals.maxSize')
-#> . There is one global: 'df' (762.94 MiB of class 'list')
-```
-## One Million Promises
-
-``` r
-library(mirai)
-daemons(8, dispatcher = FALSE)
-#> [1] 8
-
-r <- 0
-start <- Sys.time()
-m <- mirai_map(1:1000000, \(x) x, .promise = \(x) r <<- r + x)
-Sys.time() - start
-#> Time difference of 6.42396 mins
-
-later::run_now()
-r
-#> [1] 500000500000
-```
-
-<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org) <br />
-Running on an Intel i7 Gen 11 notebook with 16GB RAM.</sup>
 
