@@ -189,6 +189,31 @@ f <- future(2 * d$b)
 :::
 ::::
 
+## WYSIWYG Concept (Cont'd)
+
+`mirai_map()` does not use 'chunking':
+
+```{.r code-line-numbers="|1-4|6|8-10|12-14|16-18|"}
+library(mirai)
+library(parallel)
+cl <- make_cluster(4)
+daemons(4)
+
+vec <- c(1, 1, 4, 4, 1, 1, 1, 1)
+
+system.time(mirai_map(vec, Sys.sleep)[])
+#>    user  system elapsed 
+#>   0.005   0.002   4.006
+
+system.time(parLapply(cl, vec, Sys.sleep))
+#>    user  system elapsed 
+#>   0.008   0.073   8.075
+
+system.time(parLapplyLB(cl, vec, Sys.sleep))
+#>    user  system elapsed 
+#>   0.026   0.063   5.084
+```
+
 ##
 
 <img alt="mirai logo" src="images/mirai.png" width="120" />
