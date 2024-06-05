@@ -68,7 +68,7 @@ mirai - the / moju kapu /
 
 * **Motivation**: production-grade parallel computing for R
 * **Modularity**: interfaces with and enhances top packages
-* **Encapsulation**: developer interface for 3rd party launchers
+* **Encapsulation**: developer interface for 3rd party launchers such as `crew`
 
 :::
 
@@ -303,7 +303,7 @@ mirai - [ Designed for Production ]
 
 [<img alt="torch" src="https://torch.mlverse.org/css/images/hex/torch.png" width="40" />](https://shikokuchuo.net/mirai/articles/torch.html) &nbsp; Seamless cross-process use of Torch tensors and models
 
-# mirai: encapsulation
+# `crew`: an encapsulation of `mirai`
 
 ## Motivation for `crew`
 
