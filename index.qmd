@@ -49,8 +49,6 @@ h2 {
 mirai - the / moju kapu /
 :::
 
-. . . 
-
 ::: {.nonincremental}
 
 * **Motivation**: production-grade parallel computing for R
@@ -419,19 +417,16 @@ mirai - The Shinkansen of Parallel Computing
 :::
 ::::
 
-## Interfaces with and Enhances
+## Modularity: Interfaces with and Enhances
 
-[<img alt="R parallel" src="https://www.r-project.org/logo/Rlogo.png" width="40" />](https://shikokuchuo.net/mirai/articles/parallel.html) &nbsp; An alternative communications backend for R
+[<img alt="R parallel" src="https://www.r-project.org/logo/Rlogo.png" width="100" />](https://shikokuchuo.net/mirai/articles/parallel.html) &nbsp; An alternative communications backend for R
 
-[<img alt="promises" src="https://docs.posit.co/images/posit-ball.png" width="40" />](https://shikokuchuo.net/mirai/articles/promises.html) &nbsp; Next generation completely event-driven promises
+[<img alt="Shiny" src="https://github.com/rstudio/shiny/raw/main/man/figures/logo.png" width="100" />](https://shikokuchuo.net/mirai/articles/shiny.html)
+[<img alt="Plumber" src="https://rstudio.github.io/cheatsheets/html/images/logo-plumber.png" width="100" />](https://shikokuchuo.net/mirai/articles/plumber.html) Async backend (supports Shiny ExtendedTask)
 
-[<img alt="Shiny" src="https://github.com/rstudio/shiny/raw/main/man/figures/logo.png" width="40" />](https://shikokuchuo.net/mirai/articles/shiny.html) &nbsp; Asynchronous parallel / distributed backend
+[<img alt="Arrow" src="https://arrow.apache.org/img/arrow-logo_hex_black-txt_white-bg.png" width="100" />](https://shikokuchuo.net/mirai/articles/databases.html) &nbsp; Host ADBC database connections
 
-[<img alt="Plumber" src="https://rstudio.github.io/cheatsheets/html/images/logo-plumber.png" width="40" />](https://shikokuchuo.net/mirai/articles/plumber.html) &nbsp; Asynchronous parallel / distributed backend
-
-[<img alt="Arrow" src="https://arrow.apache.org/img/arrow-logo_hex_black-txt_white-bg.png" width="40" />](https://shikokuchuo.net/mirai/articles/databases.html) &nbsp; Host ADBC database connections in background processes
-
-[<img alt="torch" src="https://torch.mlverse.org/css/images/hex/torch.png" width="40" />](https://shikokuchuo.net/mirai/articles/torch.html) &nbsp; Seamless cross-process use of Torch tensors and models
+[<img alt="torch" src="https://torch.mlverse.org/css/images/hex/torch.png" width="100" />](https://shikokuchuo.net/mirai/articles/torch.html) &nbsp; Seamless handling of Torch tensors
 
 # `crew`: an encapsulation of `mirai`
 
