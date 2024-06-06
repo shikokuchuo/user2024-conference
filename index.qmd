@@ -52,7 +52,7 @@ mirai - the / moju kapu /
 ::: {.nonincremental}
 
 * **Motivation**: production-grade parallel computing for R
-* **Modularity**: interfaces with and enhances popular packages
+* **Modularity**: interfaces with and enhances base R / popular packages
 * **Encapsulation**: developer interface for 3rd party launchers such as `crew`
 
 :::
@@ -154,7 +154,6 @@ mirai - The Shinkansen of Parallel Computing
 . . .
 
 <img alt="headline" src="images/shinkansen_headline.png" width="800" />
-
 
 ##
 
@@ -262,69 +261,6 @@ mirai - The Shinkansen of Parallel Computing
 tasks <- c(1, 1, 4, 4, 1, 1, 1, 1)
 ```
 . . .
-
-:::: {.columns}
-
-::: {.column width="25%"}
-Process 1
-
-1 <br/>
-1 <br/>
-1
-
-:::
-
-::: {.column width="25%"}
-Process 2
-
-1 <br/>
-1 <br/>
-1
-
-:::
-
-::: {.column width="25%"}
-Process 3
-
-4
-:::
-
-::: {.column width="25%"}
-Process 4
-
-4
-:::
-::::
-
-##
-
-<img alt="mirai logo" src="images/mirai.png" width="120" />
-mirai - The Shinkansen of Parallel Computing
-
-:::: {.columns}
-
-::: {.column width="50%"}
-::: {.nonincremental}
-1. Fast
-2. Reliable
-
-:::
-:::
-
-::: {.column width="50%"}
-::: {.nonincremental}
-- 100x faster
-- WYSIWYG concept
-
-:::
-:::
-::::
-
-8 tasks, 4 processes
-
-```r
-tasks <- c(1, 1, 4, 4, 1, 1, 1, 1)
-```
 
 ```r
 system.time(parallel::parLapply(X = tasks, fun = Sys.sleep))
