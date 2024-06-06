@@ -74,7 +74,7 @@ Parallel & distributed computing for R
 
 ::: {.column width="80%"}
 
-The Shinkansen (bullet train)
+The 新幹線 Shinkansen (bullet train)
 
 <img alt="Shinkansen" src="images/shinkansen_fuji.jpg" width="800" />
 
@@ -109,12 +109,22 @@ mirai - The Shinkansen of Parallel Computing
 
 :::: {.columns}
 ::: {.column width="50%"}
-<img alt="Shinkansen" src="images/nozomi.webp" height="300" />
+```r
+future::value(future::future(1))
+#> [1] 1
+```
+::: {.r-stack}
+<img alt="Steam train" src="images/steam_train.jpeg" height="300" class="fragment" />
 
+<img alt="Toy train" src="images/toy_train.webp" height="300" class="fragment" />
+:::
 :::
 ::: {.column width="50%"}
-
-<img alt="Steam train" src="images/steam_train.jpeg" height="300" />
+```r
+mirai::mirai(1)[]
+#> [1] 1
+```
+<img alt="Shinkansen" src="images/nozomi.webp" height="300" />
 
 :::
 ::::
@@ -222,6 +232,7 @@ m <- mirai::mirai(x, x = model$accuracy)
 m[]
 #> [1] 0.95
 ```
+<img alt="correct" src="images/correct.png" width="80" />
 
 ##
 
@@ -253,6 +264,69 @@ mirai - The Shinkansen of Parallel Computing
 tasks <- c(1, 1, 4, 4, 1, 1, 1, 1)
 ```
 . . .
+
+:::: {.columns}
+
+::: {.column width="25%"}
+Process 1
+
+1 <br/>
+1 <br/>
+1
+
+:::
+
+::: {.column width="25%"}
+Process 2
+
+1 <br/>
+1 <br/>
+1
+
+:::
+
+::: {.column width="25%"}
+Process 3
+
+4
+:::
+
+::: {.column width="25%"}
+Process 4
+
+4
+:::
+::::
+
+##
+
+<img alt="mirai logo" src="images/mirai.png" width="120" />
+mirai - The Shinkansen of Parallel Computing
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.nonincremental}
+1. Fast
+2. Reliable
+
+:::
+:::
+
+::: {.column width="50%"}
+::: {.nonincremental}
+- 100x faster
+- WYSIWYG concept
+
+:::
+:::
+::::
+
+8 tasks, 4 processes
+
+```r
+tasks <- c(1, 1, 4, 4, 1, 1, 1, 1)
+```
 
 ```r
 system.time(parallel::parLapply(X = tasks, fun = Sys.sleep))
@@ -303,6 +377,8 @@ system.time(mirai::mirai_map(tasks, Sys.sleep)[])
 #>    user  system elapsed 
 #>   0.005   0.002   4.006
 ```
+
+<img alt="correct" src="images/correct.png" width="80" />
 
 ##
 
@@ -621,6 +697,31 @@ tar_option_set(
 * <https://books.ropensci.org/targets/crew.html>
 
 :::
+
+# Thank you
+
+## {.center}
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<img alt="mirai logo" src="images/mirai.png" width="120" />
+The Shinkansen of parallel computing
+
+<img alt="crew logo" src="images/crew.png" width="120" />
+Bringing mirai to distributed data science workloads
+
+
+:::
+
+::: {.column width="50%"}
+
+<img src="images/shinkansen.png" />
+
+Get to your destination faster!
+:::
+
+::::
 
 # Appendix: Supporting Slides
 
