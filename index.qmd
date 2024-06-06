@@ -40,19 +40,6 @@ h2 {
 - Layered engineering approach
 :::
 
-## {.center}
-
-Our Journey
-
-- The missing piece in `targets`<br />
-(Function-oriented Make-like declarative workflows for R)
-
-- The genesis of `crew`<br />
-(A distributed worker launcher)
-
-- Collaborative development with `mirai`<br />
-(Minimalist Async Evaluation Framework for R)
-
 # mirai
 
 ## {.center}
@@ -67,17 +54,37 @@ mirai - the / moju kapu /
 ::: {.nonincremental}
 
 * **Motivation**: production-grade parallel computing for R
-* **Modularity**: interfaces with and enhances top packages
+* **Modularity**: interfaces with and enhances popular packages
 * **Encapsulation**: developer interface for 3rd party launchers such as `crew`
 
 :::
 
-# mirai: motivation
+## mirai {.center}
+
+Parallel & distributed computing for R
+
+. . .
+
+:::: {.columns}
+::: {.column width="20%"}
+
+<img alt="mirai logo" src="images/mirai.png" width="120" />
+
+:::
+
+::: {.column width="80%"}
+
+The Shinkansen (bullet train)
+
+<img alt="Shinkansen" src="images/shinkansen_fuji.jpg" width="800" />
+
+:::
+::::
 
 ##
 
 <img alt="mirai logo" src="images/mirai.png" width="120" />
-mirai - [ Designed for Production ]
+mirai - The Shinkansen of Parallel Computing
 
 . . .
 
@@ -85,7 +92,7 @@ mirai - [ Designed for Production ]
 
 ::: {.column width="50%"}
 ::: {.nonincremental}
-1. High Performance
+1. Fast
 
 :::
 :::
@@ -98,40 +105,31 @@ mirai - [ Designed for Production ]
 :::
 ::::
 
-## 100x Faster
+. . .
 
-Benchmarking:
+:::: {.columns}
+::: {.column width="50%"}
+<img alt="Shinkansen" src="images/nozomi.webp" height="300" />
 
+:::
+::: {.column width="50%"}
 
-```{.r code-line-numbers="|6|13|"}
-bench::mark(mirai(1), future(1), relative = TRUE, check = FALSE)
-#> # A tibble: 2 × 6
-#>   expression   min median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 mirai(1)      1      1       74.6      1        1   
-#> 2 future(1)   158.   113.       1        5.72     2.75
+<img alt="Steam train" src="images/steam_train.jpeg" height="300" />
 
-bench::mark(collect_mirai(m), value(f), relative = TRUE)
-#> # A tibble: 2 × 6
-#>   expression         min median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr>       <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 collect_mirai(m)   1      1        84.1       Inf      NaN
-#> 2 value(f)          79.3   89.0       1         NaN      Inf
-```
-
-<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org)</sup>
+:::
+::::
 
 ##
 
 <img alt="mirai logo" src="images/mirai.png" width="120" />
-mirai - [ Designed for Production ]
+mirai - The Shinkansen of Parallel Computing
 
 :::: {.columns}
 
 ::: {.column width="50%"}
 ::: {.nonincremental}
-1. High Performance
-2. Simple and Robust
+1. Fast
+2. Reliable
 
 :::
 :::
@@ -145,71 +143,126 @@ mirai - [ Designed for Production ]
 :::
 ::::
 
-## WYSIWYG Concept
+. . .
 
-Production usage requires 'correctness' over 'convenience'
+<img alt="headline" src="images/shinkansen_headline.png" width="800" />
 
-Compare and contrast:
+
+##
+
+<img alt="mirai logo" src="images/mirai.png" width="120" />
+mirai - The Shinkansen of Parallel Computing
 
 :::: {.columns}
+
 ::: {.column width="50%"}
+::: {.nonincremental}
+1. Fast
+2. Reliable
 
-``` r
-library(mirai)
-
-d <- list(a = double(1e8), b = 1)
-
-m <- mirai(2 * x, x = d$b)
-m[]
-#> [1] 2
-```
+:::
 :::
 
 ::: {.column width="50%"}
+::: {.nonincremental}
+- 100x faster
+- WYSIWYG concept
 
-``` r
-library(future)
-
-d <- list(a = double(1e8), b = 1)
-
-f <- future(2 * d$b)
-#> Error in getGlobalsAndPackages(
-#> expr, envir = envir, tweak =
-#> tweakExpression, : The total
-#> size of the 1 globals exported
-#> for future expression ('2 *
-#> d$b') is 762.94 MiB.. This
-#> exceeds the maximum allowed
-#> size of 500.00 MiB (option
-#> 'future.globals.maxSize').
-#> There is one global: 'd'
-#> (762.94 MiB of class 'list')
-```
-
+:::
 :::
 ::::
 
-## WYSIWYG Concept (Cont'd)
+```r
+model$accuracy
+#> [1] 0.95
+```
+. . .
 
-`mirai_map()` does not use 'chunking':
+```r
+f <- future::future(model$accuracy)
+```
+. . .
 
-```{.r code-line-numbers="|1-4|6|8-10|12-14|16-18|"}
-library(mirai)
-library(parallel)
-cl <- make_cluster(4)
-daemons(4)
+<span style="color:#ff0000">
+Error in getGlobalsAndPackages(expr, envir = envir, tweak = tweakExpression,  : 
+  The total size of the 1 globals exported for future expression (‘model$accuracy’) is 762.94 MiB.. This exceeds the maximum allowed size of 500.00 MiB (option 'future.globals.maxSize'). There is one global: ‘model’ (762.94 MiB of class ‘list’)
+</span>
 
-vec <- c(1, 1, 4, 4, 1, 1, 1, 1)
+##
 
-system.time(mirai_map(vec, Sys.sleep)[])
-#>    user  system elapsed 
-#>   0.005   0.002   4.006
+<img alt="mirai logo" src="images/mirai.png" width="120" />
+mirai - The Shinkansen of Parallel Computing
 
-system.time(parLapply(cl, vec, Sys.sleep))
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.nonincremental}
+1. Fast
+2. Reliable
+
+:::
+:::
+
+::: {.column width="50%"}
+::: {.nonincremental}
+- 100x faster
+- WYSIWYG concept
+
+:::
+:::
+::::
+
+```r
+model$accuracy
+#> [1] 0.95
+```
+
+```r
+m <- mirai::mirai(x, x = model$accuracy)
+m[]
+#> [1] 0.95
+```
+
+##
+
+<img alt="mirai logo" src="images/mirai.png" width="120" />
+mirai - The Shinkansen of Parallel Computing
+
+:::: {.columns}
+
+::: {.column width="50%"}
+::: {.nonincremental}
+1. Fast
+2. Reliable
+
+:::
+:::
+
+::: {.column width="50%"}
+::: {.nonincremental}
+- 100x faster
+- WYSIWYG concept
+
+:::
+:::
+::::
+
+8 tasks, 4 processes
+
+```r
+tasks <- c(1, 1, 4, 4, 1, 1, 1, 1)
+```
+. . .
+
+```r
+system.time(parallel::parLapply(X = tasks, fun = Sys.sleep))
 #>    user  system elapsed 
 #>   0.008   0.073   8.075
+```
+. . .
 
-system.time(parLapplyLB(cl, vec, Sys.sleep))
+```r
+system.time(parallel::parLapplyLB(X = tasks, fun = Sys.sleep))
 #>    user  system elapsed 
 #>   0.026   0.063   5.084
 ```
@@ -217,15 +270,14 @@ system.time(parLapplyLB(cl, vec, Sys.sleep))
 ##
 
 <img alt="mirai logo" src="images/mirai.png" width="120" />
-mirai - [ Designed for Production ]
+mirai - The Shinkansen of Parallel Computing
 
 :::: {.columns}
 
 ::: {.column width="50%"}
 ::: {.nonincremental}
-1. High Performance
-2. Simple and Robust
-3. Massively Scalable
+1. Fast
+2. Reliable
 
 :::
 :::
@@ -234,45 +286,36 @@ mirai - [ Designed for Production ]
 ::: {.nonincremental}
 - 100x faster
 - WYSIWYG concept
-- one million promises
 
 :::
 :::
 ::::
 
-## One Million Promises
 
-```{.r code-line-numbers="|1-3|5-9|11-13|"}
-library(mirai)
-daemons(8, dispatcher = FALSE)
-#> [1] 8
+8 tasks, 4 processes
 
-r <- 0
-start <- Sys.time()
-m <- mirai_map(1:1000000, \(x) x, .promise = \(x) r <<- r + x)
-Sys.time() - start
-#> Time difference of 6.42396 mins
-
-later::run_now()
-r
-#> [1] 500000500000
+```r
+tasks <- c(1, 1, 4, 4, 1, 1, 1, 1)
 ```
 
-<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org) <br />
-Running on an Intel i7 Gen 11 notebook with 16GB RAM.</sup>
+```r
+system.time(mirai::mirai_map(tasks, Sys.sleep)[])
+#>    user  system elapsed 
+#>   0.005   0.002   4.006
+```
 
 ##
 
 <img alt="mirai logo" src="images/mirai.png" width="120" />
-mirai - [ Designed for Production ]
+mirai - The Shinkansen of Parallel Computing
 
 :::: {.columns}
 
 ::: {.column width="50%"}
 ::: {.nonincremental}
-1. High Performance
-2. Simple and Robust
-3. Massively Scalable
+1. Fast
+2. Reliable
+3. Scalable
 
 :::
 :::
@@ -287,7 +330,18 @@ mirai - [ Designed for Production ]
 :::
 ::::
 
-# mirai: modularity
+. . .
+
+:::: {.columns}
+
+::: {.column width="50%"}
+<img alt="tokyo metro" src="images/metro.png" width="400" />
+:::
+
+::: {.column width="50%"}
+<img alt="shanghai maglev" src="images/maglev.webp" width="400" />
+:::
+::::
 
 ## Interfaces with and Enhances
 
@@ -568,3 +622,117 @@ tar_option_set(
 
 :::
 
+# Appendix: Supporting Slides
+
+## mirai - 100x Faster
+
+Benchmarking:
+
+
+```{.r code-line-numbers="|6|13|"}
+bench::mark(mirai(1), future(1), relative = TRUE, check = FALSE)
+#> # A tibble: 2 × 6
+#>   expression   min median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
+#> 1 mirai(1)      1      1       74.6      1        1   
+#> 2 future(1)   158.   113.       1        5.72     2.75
+
+bench::mark(collect_mirai(m), value(f), relative = TRUE)
+#> # A tibble: 2 × 6
+#>   expression         min median `itr/sec` mem_alloc `gc/sec`
+#>   <bch:expr>       <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
+#> 1 collect_mirai(m)   1      1        84.1       Inf      NaN
+#> 2 value(f)          79.3   89.0       1         NaN      Inf
+```
+
+<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org)</sup>
+
+## mirai - WYSIWYG Concept
+
+Production usage requires 'correctness' over 'convenience'
+
+Compare and contrast:
+
+:::: {.columns}
+::: {.column width="50%"}
+
+``` r
+library(mirai)
+
+d <- list(a = double(1e8), b = 1)
+
+m <- mirai(2 * x, x = d$b)
+m[]
+#> [1] 2
+```
+:::
+
+::: {.column width="50%"}
+
+``` r
+library(future)
+
+d <- list(a = double(1e8), b = 1)
+
+f <- future(2 * d$b)
+#> Error in getGlobalsAndPackages(
+#> expr, envir = envir, tweak =
+#> tweakExpression, : The total
+#> size of the 1 globals exported
+#> for future expression ('2 *
+#> d$b') is 762.94 MiB.. This
+#> exceeds the maximum allowed
+#> size of 500.00 MiB (option
+#> 'future.globals.maxSize').
+#> There is one global: 'd'
+#> (762.94 MiB of class 'list')
+```
+
+:::
+::::
+
+## mirai - WYSIWYG Concept (Cont'd)
+
+`mirai_map()` does not use 'chunking':
+
+```{.r code-line-numbers="|1-4|6|8-10|12-14|16-18|"}
+library(mirai)
+library(parallel)
+cl <- make_cluster(4)
+daemons(4)
+
+vec <- c(1, 1, 4, 4, 1, 1, 1, 1)
+
+system.time(mirai_map(vec, Sys.sleep)[])
+#>    user  system elapsed 
+#>   0.005   0.002   4.006
+
+system.time(parLapply(cl, vec, Sys.sleep))
+#>    user  system elapsed 
+#>   0.008   0.073   8.075
+
+system.time(parLapplyLB(cl, vec, Sys.sleep))
+#>    user  system elapsed 
+#>   0.026   0.063   5.084
+```
+
+## mirai - One Million Promises
+
+```{.r code-line-numbers="|1-3|5-9|11-13|"}
+library(mirai)
+daemons(8, dispatcher = FALSE)
+#> [1] 8
+
+r <- 0
+start <- Sys.time()
+m <- mirai_map(1:1000000, \(x) x, .promise = \(x) r <<- r + x)
+Sys.time() - start
+#> Time difference of 6.42396 mins
+
+later::run_now()
+r
+#> [1] 500000500000
+```
+
+<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org) <br />
+Running on an Intel i7 Gen 11 notebook with 16GB RAM.</sup>
