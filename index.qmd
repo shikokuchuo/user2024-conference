@@ -111,18 +111,26 @@ mirai - The Shinkansen of Parallel Computing
 future::value(future::future(1))
 #> [1] 1
 ```
-::: {.r-stack}
-<img alt="Steam train" src="images/steam_train.jpeg" height="300" class="fragment" />
-
-<img alt="Toy train" src="images/toy_train.webp" height="300" class="fragment" />
-:::
 :::
 ::: {.column width="50%"}
 ```r
 mirai::mirai(1)[]
 #> [1] 1
 ```
-<img alt="Shinkansen" src="images/nozomi.webp" height="300" />
+:::
+::::
+
+. . .
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<img alt="Toy train" src="images/toy_train.jpg" height="300" />
+
+:::
+::: {.column width="50%"}
+
+<img alt="Shinkansen" src="images/shinkansen.jpg" height="300" />
 
 :::
 ::::
@@ -259,21 +267,20 @@ mirai - The Shinkansen of Parallel Computing
 
 ```r
 tasks <- c(1, 1, 4, 4, 1, 1, 1, 1)
+parallel::parLapply(X = tasks, fun = Sys.sleep)
 ```
 . . .
 
-```r
-system.time(parallel::parLapply(X = tasks, fun = Sys.sleep))
-#>    user  system elapsed 
-#>   0.008   0.073   8.075
-```
+<span style="color:#ff0000">8 seconds!</span>
+
 . . .
 
 ```r
-system.time(parallel::parLapplyLB(X = tasks, fun = Sys.sleep))
-#>    user  system elapsed 
-#>   0.026   0.063   5.084
+parallel::parLapplyLB(X = tasks, fun = Sys.sleep)
 ```
+. . .
+
+<span style="color:#ff0000">5 seconds!</span>
 
 ##
 
@@ -304,13 +311,12 @@ mirai - The Shinkansen of Parallel Computing
 
 ```r
 tasks <- c(1, 1, 4, 4, 1, 1, 1, 1)
+mirai::mirai_map(tasks, Sys.sleep)[]
 ```
 
-```r
-system.time(mirai::mirai_map(tasks, Sys.sleep)[])
-#>    user  system elapsed 
-#>   0.005   0.002   4.006
-```
+. . .
+
+<span style="color:#00ff66">4 seconds</span>
 
 <img alt="correct" src="images/correct.png" width="80" />
 
@@ -647,9 +653,11 @@ Bringing mirai to distributed data science workloads
 
 ::: {.column width="50%"}
 
+The obvious choice for long-distance travel...
+
 <img src="images/shinkansen.png" />
 
-Get to your destination faster!
+get to your destination faster!
 :::
 
 ::::
