@@ -231,94 +231,18 @@ mirai - The Shinkansen of Parallel Computing
 model$accuracy
 #> [1] 0.95
 ```
+. . .
 
 ```r
 m <- mirai::mirai(x, x = model$accuracy)
+
+```
+. . .
+
+```r
 m[]
 #> [1] 0.95
 ```
-<img alt="correct" src="images/correct.png" width="80" />
-
-##
-
-<img alt="mirai logo" src="images/mirai.png" width="120" />
-mirai - The Shinkansen of Parallel Computing
-
-:::: {.columns}
-
-::: {.column width="50%"}
-::: {.nonincremental}
-1. Fast
-2. Reliable
-
-:::
-:::
-
-::: {.column width="50%"}
-::: {.nonincremental}
-- 100x faster
-- WYSIWYG concept
-
-:::
-:::
-::::
-
-8 tasks, 4 processes
-
-```r
-tasks <- c(1, 1, 4, 4, 1, 1, 1, 1)
-parallel::parLapply(X = tasks, fun = Sys.sleep)
-```
-. . .
-
-<span style="color:#ff0000">8 seconds!</span>
-
-. . .
-
-```r
-parallel::parLapplyLB(X = tasks, fun = Sys.sleep)
-```
-. . .
-
-<span style="color:#ff0000">5 seconds!</span>
-
-##
-
-<img alt="mirai logo" src="images/mirai.png" width="120" />
-mirai - The Shinkansen of Parallel Computing
-
-:::: {.columns}
-
-::: {.column width="50%"}
-::: {.nonincremental}
-1. Fast
-2. Reliable
-
-:::
-:::
-
-::: {.column width="50%"}
-::: {.nonincremental}
-- 100x faster
-- WYSIWYG concept
-
-:::
-:::
-::::
-
-
-8 tasks, 4 processes
-
-```r
-tasks <- c(1, 1, 4, 4, 1, 1, 1, 1)
-mirai::mirai_map(tasks, Sys.sleep)[]
-```
-
-. . .
-
-<span style="color:#00ff66">4 seconds</span>
-
-<img alt="correct" src="images/correct.png" width="80" />
 
 ##
 
@@ -668,8 +592,7 @@ get to your destination faster!
 
 Benchmarking:
 
-
-```{.r code-line-numbers="|6|13|"}
+```{.r}
 bench::mark(mirai(1), future(1), relative = TRUE, check = FALSE)
 #> # A tibble: 2 × 6
 #>   expression   min median `itr/sec` mem_alloc `gc/sec`
@@ -731,34 +654,9 @@ f <- future(2 * d$b)
 :::
 ::::
 
-## mirai - WYSIWYG Concept (Cont'd)
-
-`mirai_map()` does not use 'chunking':
-
-```{.r code-line-numbers="|1-4|6|8-10|12-14|16-18|"}
-library(mirai)
-library(parallel)
-cl <- make_cluster(4)
-daemons(4)
-
-vec <- c(1, 1, 4, 4, 1, 1, 1, 1)
-
-system.time(mirai_map(vec, Sys.sleep)[])
-#>    user  system elapsed 
-#>   0.005   0.002   4.006
-
-system.time(parLapply(cl, vec, Sys.sleep))
-#>    user  system elapsed 
-#>   0.008   0.073   8.075
-
-system.time(parLapplyLB(cl, vec, Sys.sleep))
-#>    user  system elapsed 
-#>   0.026   0.063   5.084
-```
-
 ## mirai - One Million Promises
 
-```{.r code-line-numbers="|1-3|5-9|11-13|"}
+```{.r}
 library(mirai)
 daemons(8, dispatcher = FALSE)
 #> [1] 8
