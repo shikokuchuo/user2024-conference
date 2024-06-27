@@ -593,22 +593,27 @@ get to your destination faster!
 Benchmarking:
 
 ```{.r}
-bench::mark(mirai(1), future(1), relative = TRUE, check = FALSE)
-#> # A tibble: 2 × 6
-#>   expression   min median `itr/sec` mem_alloc `gc/sec`
-#>   <bch:expr> <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 mirai(1)      1      1       74.6      1        1   
-#> 2 future(1)   158.   113.       1        5.72     2.75
+library(mirai)
+daemons(6)
+#> [1] 6
 
-bench::mark(collect_mirai(m), value(f), relative = TRUE)
+library(future)
+plan("multisession", workers = 6)
+
+mirai(1)[]
+#> [1] 1
+value(future(1))
+#> [1] 1
+
+bench::mark(mirai(1)[], value(future(1)), relative = TRUE)
 #> # A tibble: 2 × 6
 #>   expression         min median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>       <dbl>  <dbl>     <dbl>     <dbl>    <dbl>
-#> 1 collect_mirai(m)   1      1        84.1       Inf      NaN
-#> 2 value(f)          79.3   89.0       1         NaN      Inf
+#> 1 mirai(1)[]          1      1       148.        1       NaN
+#> 2 value(future(1))  186.   159.        1       152.      Inf
 ```
 
-<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org)</sup>
+<sup>Created on 2024-06-27 with [reprex v2.1.0](https://reprex.tidyverse.org)</sup>
 
 ## mirai - WYSIWYG Concept
 
@@ -622,11 +627,12 @@ Compare and contrast:
 ``` r
 library(mirai)
 
-d <- list(a = double(1e8), b = 1)
+res <- list(model = double(1e8),
+            acc = 0.95)
 
-m <- mirai(2 * x, x = d$b)
+m <- mirai(2 * x, x = res$acc)
 m[]
-#> [1] 2
+#> [1] 1.9
 ```
 :::
 
@@ -635,19 +641,20 @@ m[]
 ``` r
 library(future)
 
-d <- list(a = double(1e8), b = 1)
+res <- list(model = double(1e8),
+            acc = 0.95)
 
-f <- future(2 * d$b)
+f <- future(2 * res$acc)
 #> Error in getGlobalsAndPackages(
 #> expr, envir = envir, tweak =
 #> tweakExpression, : The total
 #> size of the 1 globals exported
 #> for future expression ('2 *
-#> d$b') is 762.94 MiB.. This
+#> res$acc') is 762.94 MiB.. This
 #> exceeds the maximum allowed
 #> size of 500.00 MiB (option
 #> 'future.globals.maxSize').
-#> There is one global: 'd'
+#> There is one global: 'res'
 #> (762.94 MiB of class 'list')
 ```
 
@@ -665,12 +672,12 @@ r <- 0
 start <- Sys.time()
 m <- mirai_map(1:1000000, \(x) x, .promise = \(x) r <<- r + x)
 Sys.time() - start
-#> Time difference of 6.42396 mins
+#> Time difference of 6.14953 mins
 
 later::run_now()
 r
 #> [1] 500000500000
 ```
 
-<sup>Created on 2024-05-27 with [reprex v2.1.0](https://reprex.tidyverse.org) <br />
+<sup>Created on 2024-06-27 with [reprex v2.1.0](https://reprex.tidyverse.org) <br />
 Running on an Intel i7 Gen 11 notebook with 16GB RAM.</sup>
