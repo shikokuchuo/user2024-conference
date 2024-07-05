@@ -53,7 +53,7 @@ mirai - the / moju kapu /
 
 * **Motivation**: production-grade parallel computing for R
 * **Modularity**: interfaces with and enhances base R / Shiny etc.
-* **Encapsulation**: developer interface for 3rd party launchers such as `crew`
+* **Encapsulation**: developer interface for 3rd party extensions such as `crew`
 
 :::
 
@@ -158,8 +158,6 @@ mirai - The Shinkansen of Parallel Computing
 :::
 :::
 ::::
-
-. . .
 
 <img alt="headline" src="images/shinkansen_headline.png" width="800" />
 
